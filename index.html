@@ -35,14 +35,15 @@
           let parser = new DOMParser();
           let xmlDOM = parser.parseFromString(xmlContent, "application/xml");
 
-          //Defining the tags from the DMARC file?
+          //Storing the contents of xml tags in arrays perhaps?
           let metaData = xmlDOM.querySelectorAll("report_metadata");
           let entry = xmlDOM.querySelectorAll("row");
           let dkim = xmlDOM.querySelectorAll("dkim");
           let spf = xmlDOM.querySelectorAll("spf");
           let policyEvaluated = xmlDOM.querySelectorAll("policy_evaluated");
 
-          // This part is about table building. I made them more global so they can be used by each of the little functions below.
+          // This part is about table building. They were inside the function in the sample I used, 
+          //but I pulled them up here so they can be used by all of them. Is that even a thing in JS?
           let row = document.createElement("tr");
           let td = document.createElement("td");
 
@@ -93,7 +94,7 @@
             //spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
           });
 
-          // appending each of the variables I grabbed in the previous part and adding them to a table row
+          // appending each of the variables I grabbed in the previous part to a row and then appending that row to the table
           row.appendChild(org);
           row.appendChild(email);
           row.appendChild(ip);
