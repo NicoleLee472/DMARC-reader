@@ -38,11 +38,12 @@
           //Storing the contents of xml tags in arrays perhaps?
           let metaData = xmlDOM.querySelectorAll("report_metadata");
           let entry = xmlDOM.querySelectorAll("row");
-          let dkim = xmlDOM.querySelectorAll("dkim");
-          let spf = xmlDOM.querySelectorAll("spf");
           let policyEvaluated = xmlDOM.querySelectorAll("policy_evaluated");
+          let authResults = xmlDOM.querySelector("auth_results");
+          let dkim = authResults.querySelectorAll("dkim");
+          let spf = authResults.querySelectorAll("spf");
 
-          // This part is about table building. They were inside the function in the sample I used, 
+          // This part is about table building. They were inside the function in the sample I used,
           //but I pulled them up here so they can be used by all of them. Is that even a thing in JS?
           let row = document.createElement("tr");
           let td = document.createElement("td");
@@ -83,15 +84,13 @@
           //This doesn't work why?
           dkim.forEach((dkimXmlNode) => {
             dkimAuthentication = document.createElement("td");
-            //dkimAuthentication.innerText = "pass";
-            //dkimAuthentication.innerText = dkimXmlNode.children[1].innerHTML;
+            dkimAuthentication.innerText = dkimXmlNode.children[1].innerHTML;
           });
 
           // and this also doesn't work why?
           spf.forEach((spfXmlNode) => {
             spfAuthentication = document.createElement("td");
-            //spfAuthentication.innerText = "pass";
-            //spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
+            spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
           });
 
           // appending each of the variables I grabbed in the previous part to a row and then appending that row to the table
