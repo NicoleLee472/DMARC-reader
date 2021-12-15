@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>DMARC Reader</title>
+  </head>
+  <body>
+    <div id="content">
+      <table id="DMARC" cellpadding="10px" style="text-align: left">
+        <thead>
+          <tr>
+            <th>Org Name</th>
+            <th>Email</th>
+            <th>IP Address</th>
+            <th>Email Volume</th>
+            <th>SPF Authentication</th>
+            <th>SPF Alignment</th>
+            <th>DKIM Authentication</th>
+            <th>DKIM Alignment</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script>
+      let xmlContent = "";
+      let tableDMARC = document.getElementById("DMARC");
+      fetch("DMARC.xml").then((response) => {
+        response.text().then((xml) => {
+          xmlContent = xml;
+
+          let parser = new DOMParser();
+          let xmlDOM = parser.parseFromString(xmlContent, "application/xml");
+
+          //Defining the tags from the DMARC file?
+          let metaData = xmlDOM.querySelectorAll("report_metadata");
+          let entry = xmlDOM.querySelectorAll("row");
+          let dkim = xmlDOM.querySelectorAll("dkim");
+          let spf = xmlDOM.querySelectorAll("spf");
+          let policyEvaluated = xmlDOM.querySelectorAll("policy_evaluated");
+
+          // This part is about table building. I made them more global so they can be used by each of the little functions below.
+          let row = document.createElement("tr");
+          let td = document.createElement("td");
+
+          //these little functions find the values I want in the xml file and assign them to variables so I can use them when I append a row to the table
+          metaData.forEach((report_metadataXmlNode) => {
+            // org name
+            org = document.createElement("td");
+            org.innerText = report_metadataXmlNode.children[0].innerHTML;
+
+            // email
+            email = document.createElement("td");
+            email.innerText = report_metadataXmlNode.children[1].innerHTML;
+          });
+
+          entry.forEach((rowXmlNode) => {
+            // source IP
+            ip = document.createElement("td");
+            ip.innerText = rowXmlNode.children[0].innerHTML;
+
+            // volume
+            volume = document.createElement("td");
+            volume.innerText = rowXmlNode.children[1].innerHTML;
+          });
+
+          policyEvaluated.forEach((policy_evaluatedXmlNode) => {
+            // spf pass or fail
+            spfAlignment = document.createElement("td");
+            spfAlignment.innerText =
+              policy_evaluatedXmlNode.children[2].innerHTML;
+
+            //dkim pass or fail
+            dkimAlignment = document.createElement("td");
+            dkimAlignment.innerText =
+              policy_evaluatedXmlNode.children[1].innerHTML;
+          });
+
+          //This doesn't work why?
+          dkim.forEach((dkimXmlNode) => {
+            dkimAuthentication = document.createElement("td");
+            //dkimAuthentication.innerText = "pass"; //why does this work and the spf one doesn't..?
+            //dkimAuthentication.innerText = dkimXmlNode.children[1].innerHTML;
+          });
+
+          // and this also doesn't work why?
+          spf.forEach((spfXmlNode) => {
+            spfAuthentication = document.createElement("td");
+            //spfAuthentication.innerText = "pass"; //why does this work and the spf one doesn't..?
+            //spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
+          });
+
+          // appending each of the variables I grabbed in the previous part and adding them to a table row
+          row.appendChild(org);
+          row.appendChild(email);
+          row.appendChild(ip);
+          row.appendChild(volume);
+          row.appendChild(spfAuthentication);
+          row.appendChild(spfAlignment);
+          row.appendChild(dkimAuthentication);
+          row.appendChild(dkimAlignment);
+          tableDMARC.children[1].appendChild(row);
+        });
+      });
+    </script>
+  </body>
+</html>
