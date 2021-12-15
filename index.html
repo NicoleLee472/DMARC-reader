@@ -28,7 +28,7 @@
     <script>
       let xmlContent = "";
       let tableDMARC = document.getElementById("DMARC");
-      fetch("DMARC.xml").then((response) => {
+      fetch("sampleDMARC.xml").then((response) => {
         response.text().then((xml) => {
           xmlContent = xml;
 
