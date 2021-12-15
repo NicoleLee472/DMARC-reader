@@ -49,6 +49,7 @@
           let td = document.createElement("td");
 
           //these little functions find the values I want in the xml file and assign them to variables so I can use them when I append a row to the table
+          // at the moment they are kind of hard coded in that I entered the location in the array so if the reports change the result will be wrong
           metaData.forEach((report_metadataXmlNode) => {
             // org name
             org = document.createElement("td");
@@ -81,13 +82,11 @@
               policy_evaluatedXmlNode.children[1].innerHTML;
           });
 
-          //This doesn't work why?
           dkim.forEach((dkimXmlNode) => {
             dkimAuthentication = document.createElement("td");
             dkimAuthentication.innerText = dkimXmlNode.children[1].innerHTML;
           });
 
-          // and this also doesn't work why?
           spf.forEach((spfXmlNode) => {
             spfAuthentication = document.createElement("td");
             spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
