@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>DMARC Reader</title>
+    <title>DMARC Report Reader</title>
   </head>
   <body>
     <div id="content">
@@ -24,86 +24,6 @@
         <tbody></tbody>
       </table>
     </div>
-
-    <script>
-      let xmlContent = "";
-      let tableDMARC = document.getElementById("DMARC");
-      fetch("sampleDMARC.xml").then((response) => {
-        response.text().then((xml) => {
-          xmlContent = xml;
-
-          let parser = new DOMParser();
-          let xmlDOM = parser.parseFromString(xmlContent, "application/xml");
-
-          //Storing the contents of xml tags in arrays perhaps?
-          let metaData = xmlDOM.querySelectorAll("report_metadata");
-          let entry = xmlDOM.querySelectorAll("row");
-          let policyEvaluated = xmlDOM.querySelectorAll("policy_evaluated");
-          let authResults = xmlDOM.querySelector("auth_results");
-          let dkim = authResults.querySelectorAll("dkim");
-          let spf = authResults.querySelectorAll("spf");
-
-          // This part is about table building. They were inside the function in the sample I used,
-          //but I pulled them up here so they can be used by all of them. Is that even a thing in JS?
-          let row = document.createElement("tr");
-          let td = document.createElement("td");
-
-          //these little functions find the values I want in the xml file and assign them to variables so I can use them when I append a row to the table
-          // at the moment they are kind of hard coded in that I entered the location in the array so if the reports change the result will be wrong
-          metaData.forEach((report_metadataXmlNode) => {
-            // org name
-            org = document.createElement("td");
-            org.innerText = report_metadataXmlNode.children[0].innerHTML;
-
-            // email
-            email = document.createElement("td");
-            email.innerText = report_metadataXmlNode.children[1].innerHTML;
-          });
-
-          entry.forEach((rowXmlNode) => {
-            // source IP
-            ip = document.createElement("td");
-            ip.innerText = rowXmlNode.children[0].innerHTML;
-
-            // volume
-            volume = document.createElement("td");
-            volume.innerText = rowXmlNode.children[1].innerHTML;
-          });
-
-          policyEvaluated.forEach((policy_evaluatedXmlNode) => {
-            // spf pass or fail
-            spfAlignment = document.createElement("td");
-            spfAlignment.innerText =
-              policy_evaluatedXmlNode.children[2].innerHTML;
-
-            //dkim pass or fail
-            dkimAlignment = document.createElement("td");
-            dkimAlignment.innerText =
-              policy_evaluatedXmlNode.children[1].innerHTML;
-          });
-
-          dkim.forEach((dkimXmlNode) => {
-            dkimAuthentication = document.createElement("td");
-            dkimAuthentication.innerText = dkimXmlNode.children[1].innerHTML;
-          });
-
-          spf.forEach((spfXmlNode) => {
-            spfAuthentication = document.createElement("td");
-            spfAuthentication.innerText = spfXmlNode.children[1].innerHTML;
-          });
-
-          // appending each of the variables I grabbed in the previous part to a row and then appending that row to the table
-          row.appendChild(org);
-          row.appendChild(email);
-          row.appendChild(ip);
-          row.appendChild(volume);
-          row.appendChild(spfAuthentication);
-          row.appendChild(spfAlignment);
-          row.appendChild(dkimAuthentication);
-          row.appendChild(dkimAlignment);
-          tableDMARC.children[1].appendChild(row);
-        });
-      });
-    </script>
+    <script src="processor.js"></script>
   </body>
 </html>
